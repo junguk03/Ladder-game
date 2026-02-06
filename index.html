@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ladder Game - 사다리타기</title>
+  <meta name="description" content="Random Ladder Game for 2-10 Players. Fun and fair way to decide!">
+  <meta property="og:title" content="Ladder Game - 사다리타기">
+  <meta property="og:description" content="Random Ladder Game for 2-10 Players">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Ladder Game</h1>
+      <p class="subtitle">Random Ladder Game for 2-10 Players</p>
+    </header>
+
+    <!-- Setup Section -->
+    <section id="setup-section" class="section">
+      <div class="player-count">
+        <label>Players</label>
+        <div class="counter">
+          <button id="btn-minus" class="btn-counter" aria-label="Decrease players">−</button>
+          <span id="player-count">4</span>
+          <button id="btn-plus" class="btn-counter" aria-label="Increase players">+</button>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Names <span class="optional">(optional)</span></label>
+        <div id="name-inputs" class="input-grid"></div>
+      </div>
+
+      <div class="input-group">
+        <label>Prizes <span class="optional">(optional)</span></label>
+        <div id="prize-inputs" class="input-grid"></div>
+      </div>
+
+      <button id="btn-generate" class="btn-primary">Generate Ladder</button>
+    </section>
+
+    <!-- Game Section -->
+    <section id="game-section" class="section hidden">
+      <div class="player-labels" id="player-labels-top"></div>
+      <canvas id="ladder-canvas"></canvas>
+      <div class="prize-labels" id="prize-labels-bottom"></div>
+
+      <div class="game-controls">
+        <button id="btn-start" class="btn-primary btn-start">Start!</button>
+        <button id="btn-select-all" class="btn-secondary hidden">Show All</button>
+      </div>
+
+      <div id="result-panel" class="result-panel hidden"></div>
+
+      <div class="bottom-controls hidden" id="bottom-controls">
+        <button id="btn-again" class="btn-secondary">Play Again</button>
+        <button id="btn-share" class="btn-secondary">Share Result</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast hidden">Copied!</div>
+
+  <script src="script.js"></script>
+</body>
+</html>

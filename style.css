@@ -1,0 +1,439 @@
+/* ===== Reset & Base ===== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #7C9FF5;
+  --primary-dark: #5B7FE5;
+  --secondary: #F5A0C0;
+  --secondary-dark: #E8809F;
+  --bg: #F8FAFF;
+  --card: #FFFFFF;
+  --text: #2D3748;
+  --text-light: #8896AB;
+  --border: #E8EDF5;
+  --success: #6BD4A8;
+  --radius: 14px;
+  --shadow: 0 4px 20px rgba(124, 159, 245, 0.12);
+  --shadow-lg: 0 8px 40px rgba(124, 159, 245, 0.18);
+}
+
+body {
+  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== Container ===== */
+.container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+/* ===== Header ===== */
+header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  color: var(--text-light);
+  font-size: 0.95rem;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+/* ===== Section ===== */
+.section {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  box-shadow: var(--shadow);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ===== Player Count ===== */
+.player-count {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.player-count label {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.counter {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.counter span {
+  font-size: 1.5rem;
+  font-weight: 800;
+  min-width: 36px;
+  text-align: center;
+  color: var(--primary-dark);
+}
+
+.btn-counter {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--bg);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.btn-counter:hover {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn-counter:active {
+  transform: scale(0.92);
+}
+
+/* ===== Input Groups ===== */
+.input-group {
+  margin-bottom: 24px;
+}
+
+.input-group label {
+  display: block;
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 10px;
+}
+
+.optional {
+  font-weight: 400;
+  color: var(--text-light);
+  font-size: 0.85rem;
+}
+
+.input-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+}
+
+.input-grid input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--bg);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+.input-grid input::placeholder {
+  color: var(--text-light);
+  font-weight: 400;
+}
+
+.input-grid input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(124, 159, 245, 0.15);
+}
+
+/* ===== Buttons ===== */
+.btn-primary {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(124, 159, 245, 0.35);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(124, 159, 245, 0.45);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-start {
+  background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+  box-shadow: 0 4px 15px rgba(245, 160, 192, 0.35);
+  max-width: 220px;
+  margin: 0 auto;
+}
+
+.btn-start:hover {
+  box-shadow: 0 6px 20px rgba(245, 160, 192, 0.45);
+}
+
+.btn-secondary {
+  padding: 12px 24px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  border-color: var(--primary);
+  color: var(--primary-dark);
+  background: rgba(124, 159, 245, 0.06);
+}
+
+.game-controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.bottom-controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+/* ===== Player & Prize Labels ===== */
+.player-labels, .prize-labels {
+  display: flex;
+  justify-content: space-around;
+}
+
+.player-labels .label-item, .prize-labels .label-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  min-width: 0;
+  flex: 1;
+}
+
+.player-labels .label-item:hover {
+  transform: scale(1.05);
+}
+
+.player-labels .label-item .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #fff;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.player-labels .label-item .name {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  max-width: 64px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.prize-labels .label-item .prize-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+}
+
+.prize-labels .label-item .prize-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-light);
+  text-align: center;
+  max-width: 64px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ===== Canvas ===== */
+#ladder-canvas {
+  width: 100%;
+  border-radius: 8px;
+  margin: 12px 0;
+}
+
+/* ===== Result Panel ===== */
+.result-panel {
+  margin-top: 20px;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(124,159,245,0.08), rgba(245,160,192,0.08));
+  border-radius: 12px;
+  border: 2px solid var(--border);
+}
+
+.result-panel h3 {
+  text-align: center;
+  margin-bottom: 14px;
+  font-size: 1.1rem;
+  color: var(--primary-dark);
+}
+
+.result-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.result-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--card);
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  animation: fadeSlideIn 0.4s ease forwards;
+  opacity: 0;
+}
+
+.result-item .arrow {
+  color: var(--secondary);
+  font-weight: 800;
+  margin: 0 8px;
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Toast ===== */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--text);
+  color: #fff;
+  padding: 12px 28px;
+  border-radius: 30px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.9rem;
+  opacity: 0;
+  transition: all 0.3s;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+  .container {
+    padding: 16px 12px 40px;
+  }
+
+  header h1 {
+    font-size: 1.6rem;
+  }
+
+  .section {
+    padding: 20px 16px;
+  }
+
+  .input-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .input-grid input {
+    padding: 9px 10px;
+    font-size: 0.85rem;
+  }
+
+  .player-labels .label-item .avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
+
+  .player-labels .label-item .name {
+    font-size: 0.7rem;
+    max-width: 48px;
+  }
+
+  .prize-labels .label-item .prize-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 0.9rem;
+  }
+
+  .prize-labels .label-item .prize-text {
+    font-size: 0.68rem;
+    max-width: 48px;
+  }
+}
