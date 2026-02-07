@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ladder Game - 사다리타기</title>
-  <meta name="description" content="Random Ladder Game for 2-10 Players. Fun and fair way to decide!">
+  <meta name="description" content="Random Ladder Game for 2-8 Players. Fun and fair way to decide!">
   <meta property="og:title" content="Ladder Game - 사다리타기">
-  <meta property="og:description" content="Random Ladder Game for 2-10 Players">
+  <meta property="og:description" content="Random Ladder Game for 2-8 Players">
   <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
   <div class="container">
     <header>
       <h1>Ladder Game</h1>
-      <p class="subtitle">Random Ladder Game for 2-10 Players</p>
+      <p class="subtitle">Random Ladder Game for 2-8 Players</p>
     </header>
 
     <!-- Setup Section -->
@@ -46,19 +46,23 @@
     <!-- Game Section -->
     <section id="game-section" class="section hidden">
       <div class="player-labels" id="player-labels-top"></div>
-      <canvas id="ladder-canvas"></canvas>
+      <div class="canvas-wrapper" id="canvas-wrapper">
+        <canvas id="ladder-canvas"></canvas>
+        <div class="ladder-cover" id="ladder-cover"></div>
+      </div>
       <div class="prize-labels" id="prize-labels-bottom"></div>
 
       <div class="game-controls">
+        <button id="btn-toggle-ladder" class="btn-toggle">Show Ladder</button>
         <button id="btn-start" class="btn-primary btn-start">Start!</button>
         <button id="btn-select-all" class="btn-secondary hidden">Show All</button>
       </div>
 
       <div id="result-panel" class="result-panel hidden"></div>
 
-      <div class="bottom-controls hidden" id="bottom-controls">
+      <div class="bottom-controls" id="bottom-controls">
         <button id="btn-again" class="btn-secondary">Play Again</button>
-        <button id="btn-share" class="btn-secondary">Share Result</button>
+        <button id="btn-share" class="btn-secondary hidden">Share Result</button>
       </div>
     </section>
   </div>

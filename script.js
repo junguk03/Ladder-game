@@ -1,16 +1,16 @@
 // ===== State =====
 let playerCount = 4;
-let ladderData = null; // { bridges: [...], paths: [...] }
+let ladderData = null;
 let animating = false;
 let revealedPlayers = new Set();
+let ladderVisible = false;
 
 const COLORS = [
   '#7C9FF5', '#F5A0C0', '#6BD4A8', '#F5C56B',
-  '#B58BF5', '#F57B7B', '#5BC8D4', '#E88B5A',
-  '#8BC34A', '#9C9C9C'
+  '#B58BF5', '#F57B7B', '#5BC8D4', '#E88B5A'
 ];
 
-const PRIZE_ICONS = ['🏆', '🎖️', '🥉', '🎁', '⭐', '🎯', '🎪', '🎨', '🎵', '🎲'];
+const PRIZE_ICONS = ['🏆', '🎖️', '🥉', '🎁', '⭐', '🎯', '🎪', '🎨'];
 
 // ===== DOM References =====
 const $playerCount = document.getElementById('player-count');
@@ -22,10 +22,13 @@ const $btnGenerate = document.getElementById('btn-generate');
 const $setupSection = document.getElementById('setup-section');
 const $gameSection = document.getElementById('game-section');
 const $canvas = document.getElementById('ladder-canvas');
+const $canvasWrapper = document.getElementById('canvas-wrapper');
+const $ladderCover = document.getElementById('ladder-cover');
 const $playerLabelsTop = document.getElementById('player-labels-top');
 const $prizeLabelsBottom = document.getElementById('prize-labels-bottom');
 const $btnStart = document.getElementById('btn-start');
 const $btnSelectAll = document.getElementById('btn-select-all');
+const $btnToggleLadder = document.getElementById('btn-toggle-ladder');
 const $resultPanel = document.getElementById('result-panel');
 const $bottomControls = document.getElementById('bottom-controls');
 const $btnAgain = document.getElementById('btn-again');
@@ -49,7 +52,7 @@ function bindEvents() {
   });
 
   $btnPlus.addEventListener('click', () => {
-    if (playerCount < 10) {
+    if (playerCount < 8) {
       playerCount++;
       $playerCount.textContent = playerCount;
       renderInputs();
@@ -59,6 +62,7 @@ function bindEvents() {
   $btnGenerate.addEventListener('click', generateGame);
   $btnStart.addEventListener('click', () => startPlayerSelect());
   $btnSelectAll.addEventListener('click', revealAll);
+  $btnToggleLadder.addEventListener('click', toggleLadder);
   $btnAgain.addEventListener('click', resetGame);
   $btnShare.addEventListener('click', shareResult);
 }
@@ -90,6 +94,20 @@ function getDefaultPrize(index) {
   return `${index + 1}${s}`;
 }
 
+// ===== Ladder Toggle =====
+function toggleLadder() {
+  ladderVisible = !ladderVisible;
+  if (ladderVisible) {
+    $ladderCover.classList.add('revealed');
+    $btnToggleLadder.textContent = 'Hide Ladder';
+    $btnToggleLadder.classList.add('active');
+  } else {
+    $ladderCover.classList.remove('revealed');
+    $btnToggleLadder.textContent = 'Show Ladder';
+    $btnToggleLadder.classList.remove('active');
+  }
+}
+
 // ===== Game Generation =====
 function generateGame() {
   const names = [];
@@ -103,32 +121,40 @@ function generateGame() {
     prizes.push(input.value.trim() || getDefaultPrize(i));
   });
 
-  // Generate random bridges
-  const rows = Math.max(6, playerCount + 2);
+  // More complex ladder: more rows & higher bridge probability
+  const rows = Math.max(10, playerCount * 3);
   const bridges = [];
 
   for (let r = 0; r < rows; r++) {
     const row = [];
     for (let c = 0; c < playerCount - 1; c++) {
-      // Ensure no two adjacent bridges in same row
+      // No two adjacent bridges in same row
       if (c > 0 && row[c - 1]) {
         row.push(false);
       } else {
-        row.push(Math.random() < 0.4);
+        row.push(Math.random() < 0.55);
       }
     }
     bridges.push(row);
   }
 
-  // Ensure each column gap has at least one bridge
+  // Ensure each column gap has at least 2 bridges for complexity
   for (let c = 0; c < playerCount - 1; c++) {
-    const hasBridge = bridges.some(row => row[c]);
-    if (!hasBridge) {
+    const bridgeCount = bridges.filter(row => row[c]).length;
+    let needed = Math.max(0, 2 - bridgeCount);
+    let attempts = 0;
+    while (needed > 0 && attempts < 50) {
       const randomRow = Math.floor(Math.random() * rows);
-      bridges[randomRow][c] = true;
-      // Fix adjacent conflicts
-      if (c > 0) bridges[randomRow][c - 1] = false;
-      if (c < playerCount - 2) bridges[randomRow][c + 1] = false;
+      if (!bridges[randomRow][c]) {
+        // Check adjacent conflicts
+        const leftOk = c === 0 || !bridges[randomRow][c - 1];
+        const rightOk = c === playerCount - 2 || !bridges[randomRow][c + 1];
+        if (leftOk && rightOk) {
+          bridges[randomRow][c] = true;
+          needed--;
+        }
+      }
+      attempts++;
     }
   }
 
@@ -147,20 +173,17 @@ function generateGame() {
 }
 
 function tracePath(startCol, bridges, rows) {
-  const steps = []; // Each step: { row, col }
+  const steps = [];
   let col = startCol;
 
-  steps.push({ row: -1, col }); // Start above
+  steps.push({ row: -1, col });
 
   for (let r = 0; r < rows; r++) {
-    // Check bridge to left
     if (col > 0 && bridges[r][col - 1]) {
       steps.push({ row: r, col });
       col--;
       steps.push({ row: r, col });
-    }
-    // Check bridge to right
-    else if (col < bridges[r].length && bridges[r][col]) {
+    } else if (col < bridges[r].length && bridges[r][col]) {
       steps.push({ row: r, col });
       col++;
       steps.push({ row: r, col });
@@ -169,7 +192,7 @@ function tracePath(startCol, bridges, rows) {
     }
   }
 
-  steps.push({ row: rows, col }); // End below
+  steps.push({ row: rows, col });
   return { startCol, endCol: col, steps };
 }
 
@@ -178,10 +201,16 @@ function showGameSection() {
   $setupSection.classList.add('hidden');
   $gameSection.classList.remove('hidden');
   $resultPanel.classList.add('hidden');
-  $bottomControls.classList.add('hidden');
+  $btnShare.classList.add('hidden');
   $btnStart.classList.remove('hidden');
   $btnSelectAll.classList.add('hidden');
   $btnStart.textContent = 'Start!';
+
+  // Reset ladder cover (hidden by default)
+  ladderVisible = false;
+  $ladderCover.classList.remove('revealed');
+  $btnToggleLadder.textContent = 'Show Ladder';
+  $btnToggleLadder.classList.remove('active');
 
   renderLabels();
   resizeCanvas();
@@ -220,9 +249,9 @@ function renderLabels() {
 }
 
 function resizeCanvas() {
-  const containerWidth = $gameSection.clientWidth - 48; // padding
+  const containerWidth = $gameSection.clientWidth - 48;
   const dpr = window.devicePixelRatio || 1;
-  const height = Math.max(300, ladderData.rows * 40 + 40);
+  const height = Math.max(350, ladderData.rows * 32 + 60);
 
   $canvas.style.width = containerWidth + 'px';
   $canvas.style.height = height + 'px';
@@ -292,7 +321,6 @@ function startPlayerSelect() {
   $btnStart.classList.add('hidden');
   $btnSelectAll.classList.remove('hidden');
 
-  // Highlight avatars as clickable
   const avatars = $playerLabelsTop.querySelectorAll('.label-item');
   avatars.forEach(a => {
     a.style.cursor = 'pointer';
@@ -305,20 +333,26 @@ function revealPlayer(playerIndex) {
   animating = true;
   revealedPlayers.add(playerIndex);
 
+  // Auto-reveal ladder when animation starts
+  if (!ladderVisible) {
+    ladderVisible = true;
+    $ladderCover.classList.add('revealed');
+    $btnToggleLadder.textContent = 'Hide Ladder';
+    $btnToggleLadder.classList.add('active');
+  }
+
   const path = ladderData.paths[playerIndex];
   const color = COLORS[playerIndex];
 
   animatePath(path, color, () => {
     animating = false;
 
-    // Dim the avatar
     const avatarEl = $playerLabelsTop.children[playerIndex];
     if (avatarEl) {
       avatarEl.style.opacity = '0.5';
       avatarEl.style.pointerEvents = 'none';
     }
 
-    // Show individual result
     showSingleResult(playerIndex, path.endCol);
 
     if (revealedPlayers.size === playerCount) {
@@ -356,14 +390,12 @@ function animatePath(pathData, color, onComplete) {
   const m = getLadderMetrics();
   const steps = pathData.steps;
 
-  // Build pixel waypoints
   const waypoints = steps.map(s => {
     const x = colX(s.col, m);
     const y = s.row === -1 ? m.padY : (s.row === ladderData.rows ? m.h - m.padY : rowY(s.row, m));
     return { x, y };
   });
 
-  // Calculate total distance
   let totalDist = 0;
   for (let i = 1; i < waypoints.length; i++) {
     const dx = waypoints[i].x - waypoints[i - 1].x;
@@ -371,7 +403,7 @@ function animatePath(pathData, color, onComplete) {
     totalDist += Math.sqrt(dx * dx + dy * dy);
   }
 
-  const duration = Math.min(2000, Math.max(1200, totalDist * 3));
+  const duration = Math.min(2500, Math.max(1400, totalDist * 2.5));
   const startTime = performance.now();
 
   function frame(now) {
@@ -380,17 +412,13 @@ function animatePath(pathData, color, onComplete) {
     const eased = easeInOutCubic(progress);
     const targetDist = eased * totalDist;
 
-    // Find position along path
     let traveled = 0;
     let px = waypoints[0].x;
     let py = waypoints[0].y;
 
-    // Redraw ladder base
     drawLadder();
-    // Redraw all previously revealed paths
     redrawRevealedPaths();
 
-    // Draw path traveled so far
     ctx.strokeStyle = color;
     ctx.lineWidth = 4;
     ctx.lineCap = 'round';
@@ -423,7 +451,7 @@ function animatePath(pathData, color, onComplete) {
     ctx.stroke();
     ctx.globalAlpha = 1;
 
-    // Draw ball
+    // Ball
     ctx.beginPath();
     ctx.arc(px, py, 7, 0, Math.PI * 2);
     ctx.fillStyle = color;
@@ -435,11 +463,9 @@ function animatePath(pathData, color, onComplete) {
     if (progress < 1) {
       requestAnimationFrame(frame);
     } else {
-      // Store the completed path for redraw
       if (!ladderData.completedPaths) ladderData.completedPaths = [];
       ladderData.completedPaths.push({ waypoints, color });
 
-      // Redraw final state
       drawLadder();
       redrawRevealedPaths();
 
@@ -467,7 +493,6 @@ function redrawRevealedPaths() {
     ctx.stroke();
     ctx.globalAlpha = 1;
 
-    // End dot
     const last = waypoints[waypoints.length - 1];
     ctx.beginPath();
     ctx.arc(last.x, last.y, 5, 0, Math.PI * 2);
@@ -504,16 +529,13 @@ function showSingleResult(playerIndex, endCol) {
   `;
 
   list.appendChild(item);
-
-  // Force reflow for animation
   item.offsetHeight;
   item.style.opacity = '1';
 }
 
 function onAllRevealed() {
   $btnSelectAll.classList.add('hidden');
-  $bottomControls.classList.remove('hidden');
-  $bottomControls.style.display = 'flex';
+  $btnShare.classList.remove('hidden');
 }
 
 function resetGame() {
@@ -522,6 +544,7 @@ function resetGame() {
   ladderData = null;
   revealedPlayers = new Set();
   animating = false;
+  ladderVisible = false;
 }
 
 // ===== Share =====
